@@ -79,8 +79,8 @@ var svgCon = d3.select("body").append("svg")
 		.attr("height", h)
 		.attr("width", w);
 
-//STATIC STUCTURES
 
+//STATIC STUCTURES
 var d = 38;
 var strokewidth = 5;
 
@@ -120,10 +120,7 @@ svgCon.append("image")
 .attr("height", h/6);
 
 
-
-
 //DYNAMIC STRUCTURES
-
 //availability zones 
 var az1 = svgCon.append("rect")
 .attr("x", rx3 = rx2+w/d)
@@ -167,21 +164,14 @@ svgCon.append("text")
 .text(data[1][0]);
 
 
-//subnets
+//Subnets and Instances. 
+//NOTE: It is predicted that the maximum number of instances in a subnet won't 
+//exceed 10. If it does, the extras will be drawn past the bottom of the subnet.
 var s = d*0.8;
-
-//top
 var length1 = data[0].length-1;
 var totalgapspace = (length1+1)*s*0.6;
 var wsub = (rw3-totalgapspace)/length1;
 var hsub = rh3-2*s;
-
-//bottom
-var length2 = data[1].length-1;
-var totalgapspace = (length2+1)*s*0.6;
-var wsub = (rw4-totalgapspace)/length2;
-var hsub = rh4-2*s;
-
 var predmaxinst = 10;
 var hpadding = hsub*0.1;
 var wpadding = wsub*0.1;
@@ -191,138 +181,86 @@ var instgap = instheightandgap*0.15;
 var instheight = instheightandgap - instgap;
 var colorlist = [];
 
-for (i = 1; i < length1+1; i++){
-	var sx = rx3+(i)*(s*0.6) + (i-1)*wsub;
-	var sy = ry3+s;
-	svgCon.append("rect")
-	.attr("x", sx)
-	.attr("y", sy)
-	.attr("width", wsub)
-	.attr("height", hsub)
-	.style("stroke", "black")
-	.style("fill-opacity",0.5)
-	.style("fill", c = Colors.random());
-	colorlist.push(c);
-	var numinstances = data[0][i][1].length;
-	svgCon.append("text")
-	.attr("x", sx)
-	.attr("y", sy)
-	.attr("dy", "1.2em")
-	.attr("dx", "0.8em")
-	.style("font-size", "small")
-	.style("font-style", "italic")
-	.text(data[0][i][0]);
- 	for (j = 0; j< numinstances; j++){
- 			suminstances += 1;
-            svgCon.append("rect")
-            .attr("x", xi = sx+wpadding/2)
-            .attr("y", yi = sy+ hpadding +j*instheightandgap)
-            //.attr("y", (j*45+sy+15 - (wsub/4-10)))
-            .attr("width", instwidth)
-            .attr("height", instheight)
-            //.style("stroke", "black")
-            .style("fill-opacity",1)
-            .style("fill", "darkorange")
-            .attr("class", function(s){
-                classname = "";
-                for (k = 0; k< data[0][i][1][j][1].length; k++){
-                    //console.log(data[0][i][1][j][1][k]);
-                    classname += (data[0][i][1][j][1][k] + " ");}
-                    return classname})
-			.on("mouseover", hoveron)
-			.on("mouseout", hoverout);
-            svgCon.append("text")
-            .attr("x", xi)
-            .attr("y", yi)
-            .attr("dy", "1.2em")
-            .attr("dx", "0.8em")
-            .style("font-size", "x-small")
-            .text(data[0][i][1][j][0])
-            .attr("class", function(s){
-                classname = "";
-                for (k = 0; k< data[0][i][1][j][1].length; k++){
-                    classname += (data[0][i][1][j][1][k] + " ");}
-                    return classname })
-			.on("mouseover", hoveron)
-			.on("mouseout", hoverout);
-            //console.log(data[0][i][1][j][0]);
+for (n = 0; n <2; n ++){
+    for (i = 1; i < length1+1; i++){
+        if (n == 0) {
+            var sx = rx3+(i)*(s*0.6) + (i-1)*wsub;
+            var sy = ry3+s;
+            c = Colors.random();
+            colorlist.push(c);
         }
-}
-
-
-
-//bottom
-for (i = 1; i < length2+1; i++){
-    var sx = rx4+(i)*(s*0.6) + (i-1)*wsub;
-    var sy = ry4+s;
-    svgCon.append("rect")
-    .attr("x", sx)
-    .attr("y", sy)
-    .attr("width", wsub)
-    .attr("height", hsub)
-    .style("stroke", "black")
-    .style("fill-opacity",0.5)
-    .style("fill", colorlist[i-1]);
-    var numinstances = data[1][i][1].length;
-    svgCon.append("text")
-    .attr("x", sx)
-    .attr("y", sy)
-    .attr("dy", "1.2em")
-    .attr("dx", "0.8em")
-    .style("font-size", "small")
-    .style("font-style", "italic")
-    .text(data[1][i][0]);
-    //console.log(data[0][i][0]);
-        for (j = 0; j< numinstances; j++){
-        	suminstances += 1;
-            svgCon.append("rect")
-            .attr("x", xi = sx+wpadding/2)
-            .attr("y", yi = sy+ hpadding +j*instheightandgap)
-            //.attr("y", (j*45+sy+15 - (wsub/4-10)))
-            .attr("width", instwidth)
-            .attr("height", instheight)
-            //.style("stroke", "black")
-            .style("fill-opacity",1)
-            .style("fill", "darkorange")
-            .attr("class", function(s){
-                classname = "";
-                for (k = 0; k< data[1][i][1][j][1].length; k++){
-                    classname += (data[1][i][1][j][1][k] + " ");}
-                    return classname })
-			.on("mouseover", hoveron)
-			.on("mouseout", hoverout);
-            svgCon.append("text")
-            .attr("x", xi)
-            .attr("y", yi)
-            .attr("dy", "1.2em")
-            .attr("dx", "0.8em")
-            .style("font-size", "x-small")
-            .text(data[1][i][1][j][0])
-            .attr("class", function(s){
-                classname = "";
-                for (k = 0; k< data[1][i][1][j][1].length; k++){
-                    classname += (data[1][i][1][j][1][k] + " ");}
-                    return classname })
-			.on("mouseover", hoveron)
-			.on("mouseout", hoverout);
+        else{
+            var sx = rx4+(i)*(s*0.6) + (i-1)*wsub;
+            var sy = ry4+s;
+            c = colorlist[i-1];
         }
+    	svgCon.append("rect")
+    	.attr("x", sx)
+    	.attr("y", sy)
+    	.attr("width", wsub)
+    	.attr("height", hsub)
+    	.style("stroke", "black")
+    	.style("fill-opacity",0.5)
+    	.style("fill", c);
+    	var numinstances = data[n][i][1].length;
+
+    	svgCon.append("text")
+    	.attr("x", sx)
+    	.attr("y", sy)
+    	.attr("dy", "1.2em")
+    	.attr("dx", "0.8em")
+    	.style("font-size", "small")
+    	.style("font-style", "italic")
+    	.text(data[n][i][0]);
+     	for (j = 0; j< numinstances; j++){
+     			suminstances += 1;
+                svgCon.append("rect")
+                .attr("x", xi = sx+wpadding/2)
+                .attr("y", yi = sy+ hpadding +j*instheightandgap)
+                .attr("width", instwidth)
+                .attr("height", instheight)
+                .style("fill-opacity",1)
+                .style("fill", "darkorange")
+                .attr("class", function(s){
+                    classname = "";
+                    for (k = 0; k< data[n][i][1][j][1].length; k++){
+                        classname += (data[n][i][1][j][1][k] + " ");}
+                        return classname})
+    			.on("mouseover", hoveron)
+    			.on("mouseout", hoverout);
+                svgCon.append("text")
+                .attr("x", xi)
+                .attr("y", yi)
+                .attr("dy", "1.2em")
+                .attr("dx", "0.8em")
+                .style("font-size", "x-small")
+                .text(data[n][i][1][j][0])
+                .attr("class", function(s){
+                    classname = "";
+                    for (k = 0; k< data[n][i][1][j][1].length; k++){
+                        classname += (data[n][i][1][j][1][k] + " ");}
+                        return classname })
+    			.on("mouseover", hoveron)
+    			.on("mouseout", hoverout);
+        }
+    }
 }
 
 
 function hoveron(d){
-var groups = String(this.getAttribute("class")).split(" ");
-for (i = 0; i < groups.length -1; i++){
-    console.log(groups[i])
-    d3.selectAll("."+ groups[i]).filter("rect").style("fill", "red");
-}
+    var groups = String(this.getAttribute("class")).split(" ");
+    for (i = 0; i < groups.length -1; i++){
+        console.log(groups[i])
+        d3.selectAll("."+ groups[i]).filter("rect").style("fill", "red");
+    }
 }
 
 
 function hoverout(d){
-var groups = String(this.getAttribute("class")).split(" ");
-for (i = 0; i < groups.length -1; i++){
-    d3.selectAll("."+ groups[i]).filter("rect").style("fill", "darkorange");
-}
+    var groups = String(this.getAttribute("class")).split(" ");
+    for (i = 0; i < groups.length -1; i++){
+        d3.selectAll("."+ groups[i]).filter("rect").style("fill", "darkorange");
+    }
 }
 
 console.log(suminstances);
