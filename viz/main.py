@@ -109,11 +109,14 @@ def vpc_data(vpc):
     return list(filter((lambda x: len(x) > 1),overall))
 
 def fix_subnet_order(data):
-    for x in range(0, len(data[0]-1)):
-        str.find(data[0][x][0])
-        print data[0][x][0]
-    return null
-
+    az2newlyordered = [data[1][0]]
+    for x in range(1, len(data[0])):
+        matchthis = data[0][x][0].replace("az1", "az2")
+        for y in range(1, len(data[1])):
+            if data[1][y][0] == matchthis:
+                az2newlyordered.append(data[1][y])
+    data[1] = az2newlyordered
+    return data
 
 def vpc_data_sg_order(vpc):
     overall = []
@@ -126,8 +129,7 @@ def vpc_data_sg_order(vpc):
             overall[i].append([str(s.tags['Name'])])
             instnamelist = map(instance_name_sg, instances_in_subnet(s.id))
             overall[i][j].append(instnamelist)
-    list(filter((lambda x: len(x) > 1),overall))
-    print overall
+    overall = list(filter((lambda x: len(x) > 1), overall))
     return fix_subnet_order(overall)
 
 #! Same as vpc_data but also has security group relations
@@ -208,19 +210,19 @@ def default():
 
 @app.route('/databricks')
 def databricks():
-    return render_template('mvp.html', data = vpc_data_sg("vpc-6d5fd208"))
+    return render_template('mvp.html', data = vpc_data_sg_order("vpc-6d5fd208"))
 
 @app.route('/staging')
 def staging():
-    return render_template('mvp.html', data = vpc_data_sg("vpc-1d39cf78"))
+    return render_template('mvp.html', data = vpc_data_sg_order("vpc-1d39cf78"))
 
 @app.route('/uat')
 def uat():
-    return render_template('mvp.html', data = vpc_data_sg("vpc-ba0cc7df"))
+    return render_template('mvp.html', data = vpc_data_sg_order("vpc-ba0cc7df"))
 
 @app.route('/production')
 def production():
-    return render_template('mvp.html', data = vpc_data_sg("vpc-8ada78ef"))
+    return render_template('mvp.html', data = vpc_data_sg_order("vpc-8ada78ef"))
 
 
 # [VPC:vpc-6d5fd208; databricks, VPC:vpc-1d39cf78; staging, VPC:vpc-ba0cc7df; uat, VPC:vpc-8ada78ef; production] 
