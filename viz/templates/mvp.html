@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load the d3 library. -->
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<style>
+/*#elem{
+    background:url("static/AWScloud.svg") center center no-repeat;
+    background-size:100px 150px;
+}*/
+body { font-family: "Open sans"; }
+</style>
+</head>
+<body>
+
+<!-- <object type="image/svg+xml" data="static/big.png" alt="AWS Overall" style="width:1200;height:800px;x:1000;y:1000"> </object> -->
+<!-- {%for item in list%}
+console.log(item)
+{% endfor %}
+ -->
+
+ <!-- <svg width = "300" height = "300">
+<rect x = "0" y= "0"  width = "300" height = "300" fill = "red"/>
+</svg> -->
+
+<script>
+data = {{data|safe}};
+console.log(data);
+var wi = window
+var h = wi.innerHeight;
+var w = wi.innerWidth;
+var hs = h.toString();
+// var ws	width.toString();
+
+//testing
+var suminstances = 0;
+
+
+var svgCon = d3.select("body").append("svg")
+		.attr("height", h)
+		.attr("width", w);
+
+
+// var cloud = d3.xml("static/AWScloud.svg", "image/svg+xml", function(xml) {
+//   document.body.appendChild(xml.documentElement);
+// });
+
+var d = 38;
+var strokewidth = 5;
+//rectangle 1 aws
+var aws = svgCon.append("rect")
+.attr("x", rx1 = w/d)
+.attr("y", ry1 = h/d)
+.attr("width", (rw1 = w-rx1*2))
+.attr("height", (rh2 = h-ry1*2))
+//.attr("class", "h i")
+.style("stroke", "orange")
+.style("stroke-width", strokewidth)
+.style("fill-opacity",0.1)
+.style("fill", "orange");
+
+
+
+
+//rectangle 2 vpc
+var vpc = svgCon.append("rect")
+.attr("x", rx2 = rx1+w/d)
+.attr("y", ry2 = ry1+h/d)
+.attr("width", rw2 = rw1-rx2)
+.attr("height", rh2 = rh2-ry2)
+//.attr("class", "8 i")
+.style("stroke", "blue")
+.style("stroke-width", strokewidth)
+.style("fill-opacity",0.05)
+.style("fill", "blue");
+
+// var test = d3.selectAll(".i");
+// test.style("stroke", "black");
+
+//aws cloud
+svgCon.append("image")
+.attr("xlink:href", "static/AWScloud.svg")
+.attr("x", rx1 - w/16)
+.attr("y", ry1 - h/16)
+.attr("width", w/8)
+.attr("height", h/8);
+
+
+//vpc cloud
+svgCon.append("image")
+.attr("xlink:href", "static/vpccloud.svg")
+.attr("x", rx2 - w/12)
+.attr("y", ry2 - h/12)
+.attr("width", w/6)
+.attr("height", h/6);
+
+
+//availability zones 
+var az1 = svgCon.append("rect")
+.attr("x", rx3 = rx2+w/d)
+.attr("y", ry3 = ry2+h/d)
+.attr("width", rw3 = rw2-rx2)
+.attr("height", rh3 = (rh2-ry2)/2)
+.style("stroke", "red")
+.style("stroke-dasharray", "5,10,5")
+.style("fill-opacity",0.1)
+.style("stroke-width", strokewidth)
+.style("fill", "red")
+.text("SUP");
+svgCon.append("text")
+.attr("x", rx3)
+.attr("y", ry3)
+.attr("dy", "1.2em")
+.attr("dx", "0.8em")
+.style("font-size", "medium")
+.style("fill", "red")
+.style("text-align", "center")
+.text(data[0][0]);
+
+var az2 = svgCon.append("rect")
+.attr("x", rx4 = rx2+w/d)
+.attr("y", ry4 = ry2+h/d+ rh3)
+.attr("width", rw4 = rw2-rx2)
+.attr("height", rh4 = (rh2-ry2)/2)
+.style("stroke", "red")
+.style("stroke-dasharray", "5,10,5")
+.style("fill-opacity",0.1)
+.style("stroke-width", strokewidth)
+.style("fill", "red");
+svgCon.append("text")
+.attr("x", rx4)
+.attr("y", ry4)
+.attr("dy", "1.2em")
+.attr("dx", "0.8em")
+.style("font-size", "medium")
+.style("fill", "red")
+.style("text-align", "center")
+.text(data[1][0]);
+
+
+Colors = {};
+Colors.names = {
+    aqua: "#00ffff",
+    azure: "#f0ffff",
+    beige: "#f5f5dc",
+    blue: "#0000ff",
+    brown: "#a52a2a",
+    cyan: "#00ffff",
+    darkblue: "#00008b",
+    darkcyan: "#008b8b",
+    darkgrey: "#a9a9a9",
+    darkgreen: "#006400",
+    darkkhaki: "#bdb76b",
+    darkmagenta: "#8b008b",
+    darkolivegreen: "#556b2f",
+    darkorange: "#ff8c00",
+    darkorchid: "#9932cc",
+    darkred: "#8b0000",
+    darksalmon: "#e9967a",
+    darkviolet: "#9400d3",
+    fuchsia: "#ff00ff",
+    gold: "#ffd700",
+    green: "#008000",
+    indigo: "#4b0082",
+    khaki: "#f0e68c",
+    lightblue: "#add8e6",
+    lightcyan: "#e0ffff",
+    lightgreen: "#90ee90",
+    lightgrey: "#d3d3d3",
+    lightpink: "#ffb6c1",
+    lightyellow: "#ffffe0",
+    lime: "#00ff00",
+    magenta: "#ff00ff",
+    maroon: "#800000",
+    navy: "#000080",
+    olive: "#808000",
+    orange: "#ffa500",
+    pink: "#ffc0cb",
+    purple: "#800080",
+    violet: "#800080",
+    red: "#ff0000",
+    silver: "#c0c0c0",
+    yellow: "#ffff00"
+};
+
+Colors.random = function() {
+    var result;
+    var count = 0;
+    for (var prop in this.names)
+        if (Math.random() < 1/++count)
+           result = prop;
+    return result;
+};
+
+
+
+//subnets
+var s = d*0.8;
+//top
+var length1 = data[0].length-1;
+var totalgapspace = (length1+1)*s*0.6;
+var wsub = (rw3-totalgapspace)/length1;
+var hsub = rh3-2*s;
+
+//bottom
+var length2 = data[1].length-1;
+var totalgapspace = (length2+1)*s*0.6;
+var wsub = (rw4-totalgapspace)/length2;
+var hsub = rh4-2*s;
+
+var predmaxinst = 10;
+var hpadding = hsub*0.1;
+var wpadding = wsub*0.1;
+var instwidth = wsub-wsub*0.1;
+var instheightandgap = (hsub-2*hpadding)/predmaxinst;
+var instgap = instheightandgap*0.15;
+var instheight = instheightandgap - instgap;
+var colorlist = [];
+
+for (i = 1; i < length1+1; i++){
+	var sx = rx3+(i)*(s*0.6) + (i-1)*wsub;
+	var sy = ry3+s;
+	svgCon.append("rect")
+	.attr("x", sx)
+	.attr("y", sy)
+	.attr("width", wsub)
+	.attr("height", hsub)
+	.style("stroke", "black")
+	.style("fill-opacity",0.5)
+	.style("fill", c = Colors.random());
+	colorlist.push(c);
+	var numinstances = data[0][i][1].length;
+	svgCon.append("text")
+	.attr("x", sx)
+	.attr("y", sy)
+	.attr("dy", "1.2em")
+	.attr("dx", "0.8em")
+	.style("font-size", "small")
+	.style("font-style", "italic")
+	.text(data[0][i][0]);
+ 	for (j = 0; j< numinstances; j++){
+ 			suminstances += 1;
+            svgCon.append("rect")
+            .attr("x", xi = sx+wpadding/2)
+            .attr("y", yi = sy+ hpadding +j*instheightandgap)
+            //.attr("y", (j*45+sy+15 - (wsub/4-10)))
+            .attr("width", instwidth)
+            .attr("height", instheight)
+            //.style("stroke", "black")
+            .style("fill-opacity",1)
+            .style("fill", "darkorange")
+            .attr("class", data[0][i][1][j][1][0])
+			.on("mouseover", hoveron)
+			.on("mouseout", hoverout);
+            svgCon.append("text")
+            .attr("x", xi)
+            .attr("y", yi)
+            .attr("dy", "1.2em")
+            .attr("dx", "0.8em")
+            .style("font-size", "x-small")
+            .text(data[0][i][1][j][0])
+            .attr("class", data[0][i][1][j][1][0])
+			.on("mouseover", hoveron)
+			.on("mouseout", hoverout);
+            //console.log(data[0][i][1][j][0]);
+        }
+}
+function hoveron(d){
+var group = this.getAttribute("class");
+console.log(group);
+var ingroup = d3.selectAll("."+ group).filter("rect");
+ingroup.style("fill", "red");
+
+// var test1 = d3.selectAll("text, rect");
+// test1.style("fill","red");
+}
+function hoverout(d){
+var group = this.getAttribute("class");
+console.log(group);
+var ingroup = d3.selectAll("."+ group).filter("rect");
+ingroup.style("fill", "darkorange");
+
+// var test1 = d3.selectAll("text, rect");
+// test1.style("fill","red");
+}
+
+
+//bottom
+
+for (i = 1; i < length2+1; i++){
+    var sx = rx4+(i)*(s*0.6) + (i-1)*wsub;
+    var sy = ry4+s;
+    svgCon.append("rect")
+    .attr("x", sx)
+    .attr("y", sy)
+    .attr("width", wsub)
+    .attr("height", hsub)
+    .style("stroke", "black")
+    .style("fill-opacity",0.5)
+    .style("fill", colorlist[i-1]);
+    var numinstances = data[1][i][1].length;
+    svgCon.append("text")
+    .attr("x", sx)
+    .attr("y", sy)
+    .attr("dy", "1.2em")
+    .attr("dx", "0.8em")
+    .style("font-size", "small")
+    .style("font-style", "italic")
+    .text(data[1][i][0]);
+    //console.log(data[0][i][0]);
+        for (j = 0; j< numinstances; j++){
+        	suminstances += 1;
+            svgCon.append("rect")
+            .attr("x", xi = sx+wpadding/2)
+            .attr("y", yi = sy+ hpadding +j*instheightandgap)
+            //.attr("y", (j*45+sy+15 - (wsub/4-10)))
+            .attr("width", instwidth)
+            .attr("height", instheight)
+            //.style("stroke", "black")
+            .style("fill-opacity",1)
+            .style("fill", "darkorange")
+            .attr("class", data[1][i][1][j][0][0])
+			.on("mouseover", hoveron)
+			.on("mouseout", hoverout);
+            svgCon.append("text")
+            .attr("x", xi)
+            .attr("y", yi)
+            .attr("dy", "1.2em")
+            .attr("dx", "0.8em")
+            .style("font-size", "x-small")
+            .text(data[1][i][1][j][0])
+            .attr("class", data[1][i][1][j][0][0])
+			.on("mouseover", hoveron)
+			.on("mouseout", hoverout);
+        }
+}
+
+//bottom
+// var length2 = data[1].length-1;
+// var totalgapspace = (length2+1)*s;
+// var wsub = (rw4-totalgapspace)/length1;
+// var hsub = rh4-2*s;
+
+// for (i = 1; i < length1; i++){
+// 	var sx = rx4+(i+1)*(s) + i*wsub;
+// 	var sy = ry4+s;
+// 	svgCon.append("rect")
+// 	.attr("x", sx)
+// 	.attr("y", sy)
+// 	.attr("width", wsub)
+// 	.attr("height", hsub)
+// 	.style("stroke", "black")
+// 	.style("fill-opacity",0.5)
+// 	.style("fill", Colors.random());
+// 	var numinstances = data[1][i][1].length;
+// 	svgCon.append("text")
+// 	.attr("x", sx)
+// 	.attr("y", sy)
+// 	.attr("dy", "1.2em")
+// 	.attr("dx", "0.8em")
+// 	.style("font-size", "x-small")
+// 	.text(data[1][i][0]);
+// 	//console.log(data[0][i][0]);
+// 		for (j = 0; j< numinstances; j++){
+// 			svgCon.append("rect")
+// 			.attr("x", xi = sx+wpadding/2)
+// 			.attr("y", yi = sy+ hpadding +j*instheightandgap)
+// 			//.attr("y", (j*45+sy+15 - (wsub/4-10)))
+// 			.attr("width", instwidth)
+// 			.attr("height", instheight)
+// 			//.style("stroke", "black")
+// 			.style("fill-opacity",1)
+// 			.style("fill", "darkorange");
+// 			svgCon.append("text")
+// 			.attr("x", xi)
+// 			.attr("y", yi)
+// 			.attr("dy", "1.2em")
+// 			.attr("dx", "0.8em")
+// 			.style("font-size", "x-small")
+// 			.text(data[0][i][1][j]);
+// 			console.log(data[0][i][1][j]);
+// 		}
+// }
+// [["az1",["snet1",["i1", "i2"], ["snet2", ["i3", "i4"]]]], ["az2",["snet3",["i5"]]]]
+
+
+
+//console.log(suminstances);
+
+</script>
+<!-- <div style="width:"+w+"px;height:"+h+"px;border:1px solid #000;">This is a rectangle!</div> -->
+
+
+
+<!-- <img src="static/big.png" style="width:100%; height:100%;"> -->
+</body>
+</html>
+
+
+
+
+
+
+
